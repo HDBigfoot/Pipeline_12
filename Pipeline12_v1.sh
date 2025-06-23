@@ -11,10 +11,4 @@ for i in $Lines
     gatk SortSam --I ${STANDARD_PATH}/Aligned/${i}_fixed.bam --O ${STANDARD_PATH}/Aligned/${i}_sorted.bam --SO coordinate
     gatk AddOrReplaceReadGroups --I ${STANDARD_PATH}/Aligned/${i}_sorted.bam --RGLB lib1 --RGPL illumina --RGPU unit1 --RGSM ${i} --O ${STANDARD_PATH}/Aligned/${i}_rg.bam
     gatk MarkDuplicates --REMOVE_DUPLICATES true --CREATE_INDEX true --ASSUME_SORTED true --I ${STANDARD_PATH}/Aligned/${i}_rg.bam --O ${STANDARD_PATH}/Dedup/${i}_dedup.bam --M ${STANDARD_PATH}/Dedup/${i}_metrics.txt
-    gatk HaplotypeCaller --sample-ploidy 1 --R /Storage/Reference/PhenixReference/NC_000962.3.fasta --I ${STANDARD_PATH}/Dedup/${i}_dedup.bam --O ${STANDARD_PATH}/Called/${i}_raw.snps.indels.vcf --max-assembly-region-size 600 --standard-min-confidence-threshold-for-calling 30.0 --min-assembly-region-size 300
-    gatk SelectVariants --R /Storage/Reference/PhenixReference/NC_000962.3.fasta --V ${STANDARD_PATH}/Called/${i}_raw.snps.indels.vcf --select-type-to-include SNP --O ${STANDARD_PATH}/Called/${i}_raw.snps.vcf
-    gatk VariantFiltration --R /Storage/Reference/PhenixReference/NC_000962.3.fasta --V ${STANDARD_PATH}/Called/${i}_raw.snps.vcf --filter-expression "QUAL < 30.0 || QD < 2.0 || FS > 60.0 || MQ < 40.0 || DP < 12" --filter-name "FAILED" --O ${STANDARD_PATH}/Called/${i}_flagged.snps.vcf
-    gatk SelectVariants --R /Storage/Reference/PhenixReference/NC_000962.3.fasta --V ${STANDARD_PATH}/Called/${i}_flagged.snps.vcf --exclude-filtered --O ${STANDARD_PATH}/VCF/${i}.vcf
-    gatk FastaAlternateReferenceMaker --R /Storage/Reference/PhenixReference/NC_000962.3.fasta --V ${STANDARD_PATH}/VCF/${i}.vcf --O ${STANDARD_PATH}/FASTA_Complete/${i}.fasta
-    sed 's/1 NC_000962.3:1-4411532/'${i}'/' ${STANDARD_PATH}/FASTA_Complete/${i}.fasta > ${STANDARD_PATH}/FASTA/${i}.fasta
     done
