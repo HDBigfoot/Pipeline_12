@@ -11,4 +11,8 @@ for i in $Lines
     gatk SortSam --I ${STANDARD_PATH}/Aligned/${i}_fixed.bam --O ${STANDARD_PATH}/Aligned/${i}_sorted.bam --SO coordinate
     gatk AddOrReplaceReadGroups --I ${STANDARD_PATH}/Aligned/${i}_sorted.bam --RGLB lib1 --RGPL illumina --RGPU unit1 --RGSM ${i} --O ${STANDARD_PATH}/Aligned/${i}_rg.bam
     gatk MarkDuplicates --REMOVE_DUPLICATES true --CREATE_INDEX true --ASSUME_SORTED true --I ${STANDARD_PATH}/Aligned/${i}_rg.bam --O ${STANDARD_PATH}/Dedup/${i}_dedup.bam --M ${STANDARD_PATH}/Dedup/${i}_metrics.txt
+    samtools mpileup -AB -f /Storage/Reference/PhenixReference/NC_000962.3.fasta ${STANDARD_PATH}/Dedup/${i}_dedup.bam > ${STANDARD_PATH}/Called/${i}.mpileup
+    VarScan pileup2snp ${STANDARD_PATH}/Called/${i}.mpileup --p-value 0.01 --min-reads2 3 --min-coverage 3 --min-freq-for-hom 0.9 --min-var-freq 0.05 > ${i}.snp
+    VarScan pileup2snp ${STANDARD_PATH}/Called/${i}.mpileup --p-value 0.01 --min-reads2 6 --min-coverage 10 --min-avg-qual 25 --min-strands2 2 --min-var-freq 0.1 > ${i}.vSNPS
+    VarScan pileup2snp ${STANDARD_PATH}/Called/${i}.mpileup --p-value 0.01 --min-reads2 20 --min-coverage 20 --min-avg-qual 25 --min-strands2 2 --min-var-freq 0.9 > ${i}.fSNPS
     done
