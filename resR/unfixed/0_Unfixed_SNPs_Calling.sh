@@ -1,15 +1,3 @@
-#mapping fastq files to genome template; starting from paired-end fastq files ($i, $j); for single-end fastq files, change the parameters accordingly.
-sickle pe -l 35 -f $i -r $j -t sanger -o $fq1 -p $fq2 -s $fq3; 
-bwa aln -R 1 ~/template/bwa/tb.ancestor.fasta $fq1 > $sai1; 
-bwa aln -R 1 ~/template/bwa/tb.ancestor.fasta $fq2 > $sai2;
-bwa aln -R 1 ~/template/bwa/tb.ancestor.fasta $fq3 > $sai3;
-bwa sampe -a 1000 -n 1 -N 1 ~/template/bwa/tb.ancestor.fasta $sai1 $sai2 $fq1 $fq2 > $samp;
-bwa samse -n 1 ~/template/bwa/tb.ancestor.fasta $sai3 $fq3 > $sams;
-samtools view -bhSt ~/template/bwa/tb.ancestor.fasta.fai $samp -o $bamp;
-samtools view -bhSt ~/template/bwa/tb.ancestor.fasta.fai $sams -o $bams; 
-samtools merge $bamm $bamp $bams;
-samtools sort $bamm -o $sortbam; 
-samtools index $sortbam;
 #generate mpileup file for each sample
 samtools mpileup -q 30 -Q 20 -ABOf ~/template/bwa/tb.ancestor.fasta $sortbam > $pileup; 
 #using varscan for SNP calling
