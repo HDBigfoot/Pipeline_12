@@ -1,6 +1,5 @@
 #!/bin/bash
 
-samtools mpileup -q 30 -Q 20 -AB -f /Storage/Reference/PhenixReference/NC_000962.3.fasta ${STANDARD_PATH}/Dedup/${i}_dedup.bam > ${STANDARD_PATH}/Called/${i}.mpileup
 varscan mpileup2snp ${STANDARD_PATH}/Called/${i}.mpileup --min-coverage 3 --min-reads2 2 --min-avg-qual 20 --min-var-freq 0.01 --min-freq-for-hom 0.9 --p-value 99e-02 --strand-filter 1 > ${STANDARD_PATH}/Called/${i}.unfixed.snps.vcf
 varscan mpileup2cns ${STANDARD_PATH}/Called/${i}.mpileup --min-coverage 3 --min-avg-qual 20 --min-var-freq 0.75 --min-reads2 2 --strand-filter 1 > ${STANDARD_PATH}/Called/${i}.unfixed.cns.vcf
 perl PE_IS_filt.pl Excluded_loci_mask.list ${STANDARD_PATH}/Called/${i}.unfixed.snps.vcf > ${STANDARD_PATH}/Called/${i}.unfixed.snps.masked.vcf
