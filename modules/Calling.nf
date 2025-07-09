@@ -2,13 +2,14 @@
 
 process Calling {
 
-    conda 'gatk4'
+    conda 'samtools varscan'
 
-    /*
-     *publishDir params.outdir + "/Calling", mode: 'copy', saveAs: {filename -> if (filename.endsWith(".vcf")) {"${sampleName}_raw.snps.indels.vcf"}
-     *                                                             else if (filename.endsWith(".idx")) {"${sampleName}_raw.snps.indels.vcf.idx"}}
-     *
-     */
+
+    publishDir params.outdir + "/Calling", mode: 'copy', saveAs: {filename -> if (filename.endsWith(".snp.vcf")) {"${sampleName}.snp.vcf"}
+                                                                 else if (filename.endsWith(".vSNPs.vcf")) {"${sampleName}.vSNPs.vcf"}
+                                                                 else if (filename.endsWith(".fSNPs.vcf")) {"${sampleName}.fSNPs.vcf"}}
+
+
 
     input:
         val sampleName
@@ -18,12 +19,16 @@ process Calling {
         path ref_dict
 
     output:
-        path "${bam_processed}_raw.snps.indels.vcf", emit: called_vcf
-        path "${bam_processed}_raw.snps.indels.vcf.idx", emit: called_idx
+        path "${called_low}.snp.vcf", emit: called_low_vcf
+        path "${called_unfixed}.vSNPs.vcf", emit: called_unfixed_vcf
+        path "${called_fixed}.fSNPs.vcf", emit: called_fixed_vcf
 
     script:
     """
-    gatk HaplotypeCaller --sample-ploidy 1 --R ${ref} --I ${bam_processed} --O ${bam_processed}_raw.snps.indels.vcf --max-assembly-region-size 600 --standard-min-confidence-threshold-for-calling 30.0 --min-assembly-region-size 300
+    samtools mpileup -q 30 -Q 20 -AB -f ${ref} ${bam_processed} > ${mpileup}.mpileup
+    varscan mpileup2snp ${mpileup}.mpileup --p-value 0.01 --min-reads2 3 --min-coverage 3 --min-freq-for-hom 0.9 --min-var-freq 0.05 --output-vcf 1 > ${called_low}.snp.vcf
+    varscan mpileup2snp ${mpileup}.mpileup --p-value 0.01 --min-reads2 6 --min-coverage 10 --min-avg-qual 25 --min-strands2 2 --min-var-freq 0.1 --output-vcf 1 >  ${called_unfixed}.vSNPs.vcf
+    varscan mpileup2snp ${mpileup}.mpileup --p-value 0.01 --min-reads2 20 --min-coverage 20 --min-avg-qual 25 --min-strands2 2 --min-var-freq 0.9 --output-vcf 1 > ${called_fixed}.fSNPs.vcf
     """
 
 }

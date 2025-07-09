@@ -4,11 +4,11 @@ process Trimming {
 
     conda 'fastp'
 
-    /*
-     *publishDir params.outdir + "/Trimming", mode: 'copy', saveAs: { filename -> if (filename.endsWith("1_fastp.fastq.gz")) {"${sampleName}_1_fastp.fastq.gz"}
-     *                                                              else if (filename.endsWith("2_fastp.fastq.gz")) {"${sampleName}_2_fastp.fastq.gz"}
-     *                                                              else if (filename.endsWith("html")) {"${sampleName}.fastp.html"}}
-     */
+
+    publishDir params.outdir + "/Trimming", mode: 'copy', saveAs: { filename -> if (filename.endsWith("1_fastp.fastq.gz")) {"${sampleName}_1_fastp.fastq.gz"}
+                                                                   else if (filename.endsWith("2_fastp.fastq.gz")) {"${sampleName}_2_fastp.fastq.gz"}
+                                                                   else if (filename.endsWith("html")) {"${sampleName}.fastp.html"}}
+
 
     input:
         val sampleName
