@@ -2,7 +2,7 @@
 
 process Annotation {
 
-    publishDir params.outdir + "/VCF", mode: 'copy', saveAs: {filename -> if (filename.endsWith(".ann.low.vcf")) {"${sampleName}.ann.low.vcf"}
+    publishDir params.outdir + "/Annotation", mode: 'copy', saveAs: {filename -> if (filename.endsWith(".ann.low.vcf")) {"${sampleName}.ann.low.vcf"}
                                                              else if (filename.endsWith(".ann.unfixed.vcf")) {"${sampleName}.ann.unfixed.vcf"}
                                                              else if (filename.endsWith(".ann.fixed.vcf")) {"${sampleName}.ann.fixed.vcf"}}
 

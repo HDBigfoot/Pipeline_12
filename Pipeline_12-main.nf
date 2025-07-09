@@ -23,7 +23,8 @@ include { Dedup } from './modules/Dedup.nf'
 include { Calling } from './modules/Calling.nf'
 include { Masking } from './modules/Masking.nf'
 include { Filtering } from './modules/Filtering.nf'
-include { Annotation } from './moducles/Annotation.nf'
+include { Annotation } from './modules/Annotation.nf'
+include { FastaConversion } from './modules/FastaConversion.nf'
 
 workflow {
 
@@ -42,5 +43,6 @@ workflow {
     Masking(sampleName_ch, Calling.out.called_low_vcf, Calling.out.called_unfixed_vcf, Calling.out.called_fixed_vcf)
     Filtering(sampleName_ch, Masking.out.masked_low_vcf, Masking.out.masked_unfixed_vcf, ref_file, ref_index_file, ref_dict_file)
     Annotation(sampleName_ch, Filtering.out.low_vcf, Filtering.out.unfixed_vcf, Masking.out.masked_fixed_vcf)
+    FastaConversion(sampleName_ch, Masking.out.masked_fixed_vcf, ref_file, ref_index_file, ref_dict_file)
 
 }
