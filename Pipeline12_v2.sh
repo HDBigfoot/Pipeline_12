@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SNP_EFF_PATH="/home/tbwg/Documents/BioInfoProjects/Pipeline_12/snpEff"
 STANDARD_PATH="/Storage/Data_DNA/Global_Dataset/Amsterdam/Run01"
 File="/Storage/Data_DNA/Global_Dataset/Amsterdam/Amsterdam_list.txt"
 Lines=$(cat $File)
@@ -17,5 +18,21 @@ for i in $Lines
     varscan mpileup2snp ${STANDARD_PATH}/Called/${i}.mpileup --p-value 0.01 --min-reads2 20 --min-coverage 20 --min-avg-qual 25 --min-strands2 2 --min-var-freq 0.9 --output-vcf 1 > ${STANDARD_PATH}/Called/${i}.fSNPs.vcf
     tb_variant_filter -R pe_ppe ${STANDARD_PATH}/Called/${i}.snp.vcf ${STANDARD_PATH}/Called/${i}.masked.snp.vcf
     tb_variant_filter -R pe_ppe ${STANDARD_PATH}/Called/${i}.vSNPs.vcf ${STANDARD_PATH}/Called/${i}.masked.vSNPs.vcf
-    tb_variant_filter -R pe_ppe ${STANDARD_PATH}/Called/${i}.fSNPs.vcf ${STANDARD_PATH}/Called/${i}.masked.fSNPs.vcf
+    tb_variant_filter -R pe_ppe ${STANDARD_PATH}/Called/${i}.fSNPs.vcf ${STANDARD_PATH}/VCF/${i}.fixed.vcf
+    gatk VariantFiltration --R /Storage/Reference/PhenixReference/NC_000962.3.fasta --V ${STANDARD_PATH}/Called/${i}.masked.snp.vcf --filter-expression "HOM > 0" --filter-name "FAILED" --O ${STANDARD_PATH}/Called/${i}.flagged.het.snp.vcf
+    gatk SelectVariants --R /Storage/Reference/PhenixReference/NC_000962.3.fasta --V ${STANDARD_PATH}/Called/${i}.flagged.het.snp.vcf --exclude-filtered --O ${STANDARD_PATH}/VCF/${i}.low.vcf
+    gatk VariantFiltration --R /Storage/Reference/PhenixReference/NC_000962.3.fasta --V ${STANDARD_PATH}/Called/${i}.masked.vSNPs.vcf --filter-expression "HOM > 0" --filter-name "FAILED" --O ${STANDARD_PATH}/Called/${i}.flagged.het.vSNPs.vcf
+    gatk SelectVariants --R /Storage/Reference/PhenixReference/NC_000962.3.fasta --V ${STANDARD_PATH}/Called/${i}.flagged.het.vSNPs.vcf --exclude-filtered --O ${STANDARD_PATH}/VCF/${i}.unfixed.vcf
+    sed 's/NC_000962.3/Chromosome/' ${STANDARD_PATH}/VCF/${i}.low.vcf > ${STANDARD_PATH}/VCF/${i}.chr.low.vcf
+    sed 's/NC_000962.3/Chromosome/' ${STANDARD_PATH}/VCF/${i}.unfixed.vcf > ${STANDARD_PATH}/VCF/${i}.chr.unfixed.vcf
+    sed 's/NC_000962.3/Chromosome/' ${STANDARD_PATH}/VCF/${i}.fixed.vcf > ${STANDARD_PATH}/VCF/${i}.chr.fixed.vcf
+    mkdir -p ${STANDARD_PATH}/Annotated/Raw/${i}_low
+    cd ${STANDARD_PATH}/Annotated/Raw/${i}_low
+    java -jar ${SNP_EFF_PATH}/snpEff.jar -v Mycobacterium_tuberculosis_h37rv ${STANDARD_PATH}/VCF/${i}.chr.low.vcf > ${i}.ann.low.vcf
+    mkdir -p ${STANDARD_PATH}/Annotated/Raw/${i}_unfixed
+    cd ${STANDARD_PATH}/Annotated/Raw/${i}_unfixed
+    java -jar ${SNP_EFF_PATH}/snpEff.jar -v Mycobacterium_tuberculosis_h37rv ${STANDARD_PATH}/VCF/${i}.chr.unfixed.vcf > ${i}.ann.unfixed.vcf
+    mkdir -p ${STANDARD_PATH}/Annotated/Raw/${i}_fixed
+    cd ${STANDARD_PATH}/Annotated/Raw/${i}_fixed
+    java -jar ${SNP_EFF_PATH}/snpEff.jar -v Mycobacterium_tuberculosis_h37rv ${STANDARD_PATH}/VCF/${i}.chr.fixed.vcf > ${i}.ann.fixed.vcf
     done
