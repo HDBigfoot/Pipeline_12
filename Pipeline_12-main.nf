@@ -21,8 +21,8 @@ include { Trimming } from './modules/Trimming.nf'
 include { Mapping } from './modules/Mapping.nf'
 include { Dedup } from './modules/Dedup.nf'
 include { Calling } from './modules/Calling.nf'
+include { Masking } from './modules/Masking.nf'
 include { Filtering } from './modules/Filtering.nf'
-include { FastaConversion } from './modules/FastaConversion.nf'
 
 workflow {
 
@@ -38,7 +38,7 @@ workflow {
     Mapping(sampleName_ch, Trimming.out.fastp_R1, Trimming.out.fastp_R2, ref_file, ref_index_file, ref_dict_file)
     Dedup(sampleName_ch, Mapping.out.bwa_aligned, ref_file, ref_index_file, ref_dict_file)
     Calling(sampleName_ch, Dedup.out.bam_processed, ref_file, ref_index_file, ref_dict_file)
-    Filtering(sampleName_ch, Calling.out.called_vcf, Calling.out.called_idx, ref_file, ref_index_file, ref_dict_file)
-    FastaConversion(sampleName_ch, Filtering.out.clean_vcf, Filtering.out.clean_idx, ref_file, ref_index_file, ref_dict_file)
+    Masking(sampleName_ch, Calling.out.called_low_vcf, Calling.out.called_unfixed_vcf, Calling.out.called_fixed_vcf)
+    Filtering(sampleName_ch, Masking.out.masked_low_vcf, Masking.out.masked_unfixed_vcf, ref_file, ref_index_file, ref_dict_file)
 
 }
