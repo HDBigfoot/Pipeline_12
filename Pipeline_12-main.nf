@@ -7,8 +7,8 @@ params.ref_index = "${projectDir}/Reference/NC_000962.3.fasta.fai"
 params.ref_dict = "${projectDir}/Reference/NC_000962.3.dict"
 
 log.info """
-Pipeline_11
-RC3ID & CentraBioRes
+Pipeline_12 - Analysis pipeline for detecting unfixed variants in Mycobacterium tuberculosis
+RC3ID
 Universitas Padjadjaran
 ================================
 sample     : $params.sample_name
