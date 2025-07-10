@@ -8,7 +8,8 @@ process FastaConversion {
 
     input:
         val sampleName
-        path masked_fixed_vcf
+        path fixed_vcf
+        path fixed_index
         path ref
         path ref_index
         path ref_dict
@@ -18,9 +19,8 @@ process FastaConversion {
 
     script:
     """
-    gatk IndexFeatureFile --I ${masked_fixed_vcf}
-    gatk FastaAlternateReferenceMaker --R ${ref} --V ${masked_fixed_vcf} --O ${masked_fixed_vcf}_raw.fasta
-    sed 's/1 NC_000962.3:1-4411532/'${sampleName}'/' ${masked_fixed_vcf}_raw.fasta > ${masked_fixed_vcf}_clean.fasta
+    gatk FastaAlternateReferenceMaker --R ${ref} --V ${fixed_vcf} --O ${masked_fixed_vcf}_raw.fasta
+    sed 's/1 NC_000962.3:1-4411532/'${sampleName}'/' ${fixed_vcf}_raw.fasta > ${fixed_vcf}_clean.fasta
     """
 
 }

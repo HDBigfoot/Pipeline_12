@@ -46,6 +46,6 @@ workflow {
     Calling(sampleName_ch, Dedup.out.bam_processed, ref_file, ref_index_file, ref_dict_file)
     Filtering(sampleName_ch, Calling.out.called_low_vcf, Calling.out.called_unfixed_vcf, Calling.out.called_fixed_vcf, ref_file, ref_index_file, ref_dict_file, mask_file, mask_index_file)
     Annotation(sampleName_ch, Filtering.out.low_vcf, Filtering.out.unfixed_vcf, Filtering.out.fixed_vcf)
-    FastaConversion(sampleName_ch, Masking.out.masked_fixed_vcf, ref_file, ref_index_file, ref_dict_file)
+    FastaConversion(sampleName_ch, Filtering.out.fixed_vcf, Filtering.out.fixed_idx, ref_file, ref_index_file, ref_dict_file)
 
 }
