@@ -15,11 +15,11 @@ process FastaConversion {
         path ref_dict
 
     output:
-        path "${masked_fixed_vcf}_clean.fasta"
+        path "${fixed_vcf}_clean.fasta"
 
     script:
     """
-    gatk FastaAlternateReferenceMaker --R ${ref} --V ${fixed_vcf} --O ${masked_fixed_vcf}_raw.fasta
+    gatk FastaAlternateReferenceMaker --R ${ref} --V ${fixed_vcf} --O ${fixed_vcf}_raw.fasta
     sed 's/1 NC_000962.3:1-4411532/'${sampleName}'/' ${fixed_vcf}_raw.fasta > ${fixed_vcf}_clean.fasta
     """
 

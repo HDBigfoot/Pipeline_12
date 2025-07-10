@@ -37,7 +37,7 @@ process Filtering {
     gatk VariantFiltration --R ${ref} --V ${called_unfixed_vcf} --filter-expression "HOM > 0" --filter-name "FAILED" --O ${called_unfixed_vcf}.flagged.vSNPs.vcf
     gatk SelectVariants --R ${ref} --V ${called_unfixed_vcf}.flagged.vSNPs.vcf --exclude-filtered --O ${called_unfixed_vcf}.unfixed.vcf
     gatk VariantFiltration -R ${ref} --V ${called_fixed_vcf} --mask ${mask} --O ${called_fixed_vcf}.flagged.fSNPs.vcf
-    gatk SelectVariants -R ${Ref} --V ${called_fixed_vcf}.flagged.fSNPs.vcf --exclude-filtered --O ${called_fixed_vcf}.fixed.vcf
+    gatk SelectVariants -R ${ref} --V ${called_fixed_vcf}.flagged.fSNPs.vcf --exclude-filtered --O ${called_fixed_vcf}.fixed.vcf
     """
 
 }
