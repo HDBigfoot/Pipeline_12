@@ -7,28 +7,37 @@ process Filtering {
     publishDir params.outdir + "/VCF", mode: 'copy', saveAs: {filename -> if (filename.endsWith(".low.vcf")) {"${sampleName}.low.vcf"}
                                                              else if (filename.endsWith(".low.vcf.idx")) {"${sampleName}.low.vcf.idx"}
                                                              else if (filename.endsWith(".unfixed.vcf")) {"${sampleName}.unfixed.vcf"}
-                                                             else if (filename.endsWith(".unfixed.vcf.idx")) {"${sampleName}.unfixed.vcf.idx"}}
+                                                             else if (filename.endsWith(".unfixed.vcf.idx")) {"${sampleName}.unfixed.vcf.idx"}
+                                                             else if (filename.endsWith(".fixed.vcf")) {"${sampleName}.fixed.vcf"}
+                                                             else if (filename.endsWith(".fixed.vcf.idx")) {"${sampleName}.fixed.vcf.idx"}}
 
     input:
         val sampleName
-        path masked_low_vcf
-        path masked_unfixed_vcf
+        path called_low_vcf
+        path called_unfixed_vcf
+        path called_fixed_vcf
         path ref
         path ref_index
         path ref_dict
+        path mask
+        path mask_index
 
     output:
-        path "${masked_low_vcf}.low.vcf", emit: low_vcf
-        path "${masked_low_vcf}.low.vcf.idx", emit: low_idx
-        path "${masked_unfixed_vcf}.unfixed.vcf", emit: unfixed_vcf
-        path "${masked_unfixed_vcf}.unfixed.vcf.idx", emit: unfixed_idx
+        path "${called_low_vcf}.low.vcf", emit: low_vcf
+        path "${called_low_vcf}.low.vcf.idx", emit: low_idx
+        path "${called_unfixed_vcf}.unfixed.vcf", emit: unfixed_vcf
+        path "${called_unfixed_vcf}.unfixed.vcf.idx", emit: unfixed_idx
+        path "${called_fixed_vcf}.fixed.vcf", emit: fixed_vcf
+        path "${called_fixed_vcf}.fixed.vcf.idx", emit: fixed_idx
 
     script:
     """
-    gatk VariantFiltration --R ${ref} --V ${masked_low_vcf} --filter-expression "HOM > 0" --filter-name "FAILED" --O ${masked_low_vcf}.flagged.snp.vcf
-    gatk SelectVariants --R ${ref} --V ${masked_low_vcf}.flagged.snp.vcf --exclude-filtered --O ${masked_low_vcf}.low.vcf
-    gatk VariantFiltration --R ${ref} --V ${masked_unfixed_vcf} --filter-expression "HOM > 0" --filter-name "FAILED" --O ${masked_unfixed_vcf}.flagged.vSNPs.vcf
-    gatk SelectVariants --R ${ref} --V ${masked_unfixed_vcf}.flagged.vSNPs.vcf --exclude-filtered --O ${masked_unfixed_vcf}.unfixed.vcf
+    gatk VariantFiltration --R ${ref} --V ${called_low_vcf} --filter-expression "HOM > 0" --filter-name "FAILED" --O ${called_low_vcf}.flagged.snp.vcf
+    gatk SelectVariants --R ${ref} --V ${called_low_vcf}.flagged.snp.vcf --exclude-filtered --O ${called_low_vcf}.low.vcf
+    gatk VariantFiltration --R ${ref} --V ${called_unfixed_vcf} --filter-expression "HOM > 0" --filter-name "FAILED" --O ${called_unfixed_vcf}.flagged.vSNPs.vcf
+    gatk SelectVariants --R ${ref} --V ${called_unfixed_vcf}.flagged.vSNPs.vcf --exclude-filtered --O ${called_unfixed_vcf}.unfixed.vcf
+    gatk VariantFiltration -R ${ref} --V ${called_fixed_vcf} --mask ${mask} --O ${called_fixed_vcf}.flagged.fSNPs.vcf
+    gatk SelectVariants -R ${Ref} --V ${called_fixed_vcf}.flagged.fSNPs.vcf --exclude-filtered --O ${called_fixed_vcf}.fixed.vcf
     """
 
 }
