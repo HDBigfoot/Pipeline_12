@@ -26,6 +26,7 @@ include { Calling } from './modules/Calling.nf'
 include { Filtering } from './modules/Filtering.nf'
 include { Annotation } from './modules/Annotation.nf'
 include { FastaConversion } from './modules/FastaConversion.nf'
+include { ProduceReport } from './modules/ProduceReport.nf'
 
 workflow {
 
@@ -47,5 +48,6 @@ workflow {
     Filtering(sampleName_ch, Calling.out.called_low_vcf, Calling.out.called_unfixed_vcf, Calling.out.called_fixed_vcf, ref_file, ref_index_file, ref_dict_file, mask_file, mask_index_file)
     Annotation(sampleName_ch, Filtering.out.low_vcf, Filtering.out.unfixed_vcf, Filtering.out.fixed_vcf)
     FastaConversion(sampleName_ch, Filtering.out.fixed_vcf, Filtering.out.fixed_idx, ref_file, ref_index_file, ref_dict_file)
+    ProduceReport(sampleName_ch, Annotation.out.ann_low_vcf, Annotation.out.ann_unfixed_vcf, Annotation.out.ann_fixed.vcf)
 
 }
