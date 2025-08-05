@@ -22,9 +22,9 @@ process Masking {
 
     script:
     """
-    tb_variant_filter -R pe_ppe ${called_low_vcf} ${called_low_vcf}.masked.snp.vcf
-    tb_variant_filter -R pe_ppe ${called_unfixed_vcf} ${called_unfixed_vcf}.masked.vSNPs.vcf
-    tb_variant_filter -R pe_ppe ${called_fixed_vcf} ${called_fixed_vcf}.fixed.vcf
+    tb_variant_filter -R farhat_rlc ${called_low_vcf} ${called_low_vcf}.masked.snp.vcf
+    tb_variant_filter -R farhat_rlc ${called_unfixed_vcf} ${called_unfixed_vcf}.masked.vSNPs.vcf
+    tb_variant_filter -R farhat_rlc ${called_fixed_vcf} ${called_fixed_vcf}.fixed.vcf
     """
 
 }
