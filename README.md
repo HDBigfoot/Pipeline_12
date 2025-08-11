@@ -58,8 +58,8 @@ samtools
 varscan
 > Koboldt DC, Chen K, Wylie T, Larson DE, McLellan MD, Mardis ER, Weinstock GM, Wilson RK, Ding L. VarScan: variant detection in massively parallel sequencing of individual and pooled samples. Bioinformatics. 2009 Sep 1;25(17):2283-5. <https://doi.org/10.1093/bioinformatics/btp373>
 
-tb_variant_filter
-> https://github.com/COMBAT-TB/tb_variant_filter
+Regions masked according to Marin, et al., (2022)
+> Maximillian Marin, Roger Vargas, Michael Harris, Brendan Jeffrey, L Elaine Epperson, David Durbin, Michael Strong, Max Salfinger, Zamin Iqbal, Irada Akhundova, Sergo Vashakidze, Valeriu Crudu, Alex Rosenthal, Maha Reda Farhat, Benchmarking the empirical accuracy of short-read sequencing across the M. tuberculosis genome, Bioinformatics, Volume 38, Issue 7, March 2022, Pages 1781–1787, <https://doi.org/10.1093/bioinformatics/btac023>
 
 snpEff
 > Cingolani P, Platts A, Wang le L, Coon M, Nguyen T, Wang L, Land SJ, Lu X, Ruden DM. A program for annotating and predicting the effects of single nucleotide polymorphisms, SnpEff: SNPs in the genome of Drosophila melanogaster strain w1118; iso-2; iso-3. Fly (Austin). 2012 Apr-Jun;6(2):80-92. <https://doi.org/10.4161/fly.19695>
