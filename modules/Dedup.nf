@@ -5,7 +5,8 @@ process Dedup {
     conda 'gatk4'
 
     publishDir params.outdir + "/Dedup", mode: 'copy', saveAs: { filename -> if (filename.endsWith("_metrics.txt")) {"${sampleName}_metrics.txt"}
-                                                               else if (filename.endsWith("_dedup.bam")) {"${sampleName}_dedup.bam"}}
+                                                               else if (filename.endsWith("_dedup.bam")) {"${sampleName}_dedup.bam"}
+                                                               else if (filename.endsWith("_dedup.bai")) {"${sampleName}_dedup.bai"}}
 
     input:
         val sampleName
